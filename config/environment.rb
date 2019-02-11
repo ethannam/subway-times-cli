@@ -11,3 +11,4 @@ ActiveRecord::Base.establish_connection(
 require_relative '../app/models/train.rb'
 require_relative '../app/models/station.rb'
 require_relative '../app/models/arrival.rb'
+require_relative '../app/models/line.rb'
