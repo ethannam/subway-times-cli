@@ -14,7 +14,6 @@ def import_stations
     lines = station[12].split(" ")[0].split("-").uniq
 
     # hash[name] = {latitude: latitude, longitude: longitude, lines: lines}
-
     if hash[name]
       hash[name][:lines] = hash[name][:lines] + lines
     else
