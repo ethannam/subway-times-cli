@@ -12,20 +12,22 @@ def url
   "http://datamine.mta.info/mta_esi.php?#{query}"
 end
 
-def fetch_data
-  data = HTTParty.get(url).body
-  TransitRealtime::FeedMessage.decode(data)
-end
+# def fetch_data
+#   data = HTTParty.get(url).body
+#   TransitRealtime::FeedMessage.decode(data)
+# end
 
 def api_call
 
   data = Net::HTTP.get(URI.parse(url))
   feed = Transit_realtime::FeedMessage.decode(data)
-  # for entity in feed.entity do
-  #   if entity.field?(:trip_update)
-  #     p entity.trip_update
-  #   end
-  # end
+  binding.pry
+  for entity in feed.entity do
+    binding.pry
+    if entity.field?(:trip_update)
+      p entity.trip_update
+    end
+  end
 
   binding.pry
 
