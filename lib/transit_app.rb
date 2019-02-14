@@ -1,5 +1,4 @@
 class TransitApp
-  binding.pry
   def self.start
     welcome
 
