@@ -1,4 +1,7 @@
 class TransitApp
+  # binding.pry
+  @user = nil
+
   def self.start
     welcome
 
@@ -8,8 +11,8 @@ class TransitApp
 
       case command
       when "LOGIN"
-        user = login
-        if user
+        @user = login
+        if @user
           user_navigation
           break
         else
@@ -90,12 +93,91 @@ class TransitApp
   end
 
   def self.user_navigation
-    puts "What train are you looking for?"
-    train_request = gets.chomp!
-    feed_id = search_feed(train_request)
-    url(feed_id)
-    puts "At what station?"
-    station_request = gets.chomp!
-    api_call(train_request, station_request, feed_id)
+    loop do
+      user_nav_menu
+      command = get_user_command
+
+      case command
+      when "SEARCH"
+        search
+        prompt_to_add
+      when "FAVORITES"
+        favorites
+      when "HELP"
+      when "QUIT"
+      else
+        puts "\n"
+        puts "Please enter a valid command."
+      end
+
+      break if command.eql? "QUIT"
+    end
+  end
+
+  def self.user_nav_menu
+    puts "\n"
+    puts "Available commands:"
+    puts "SEARCH"
+    puts "FAVORITES"
+    puts "HELP"
+    puts "QUIT"
+    puts "\n"
+  end
+
+  def self.search
+    station_result = []
+
+    loop do
+      puts "What station are you looking for?"
+      station_query = gets.chomp
+      station_result = Station.where(name: station_query, parent_station: nil)
+      if station_result.length.eql? 0
+        puts "\n"
+        puts "That station doesn't exist. Try again."
+      end
+      break if station_result.length > 0
+    end
+
+    if station_result.length.eql? 1
+      station = station_result.first
+      api_call(station)
+    else
+      lines = station_result.map do |station|
+        Line.find(LineStation.find_by(station_id: station.id).line_id)
+      end
+
+      loop do
+        puts "Choose a line for this station:"
+        lines.each { |line| puts line.name }
+        input = gets.chomp
+        result = Line.find_by(name: input)
+
+        if result == nil
+          puts "\n"
+          puts "Choose a valid line please."
+        else
+          station = station_result.select do |station|
+            LineStation.find_by(line_id: result.id, station_id: station.id)
+          end.first
+          api_call(station)
+        end
+        break if (result != nil)
+      end
+    end
+    # TO-DO: Give user option to add the result to their favorites list
+  end
+
+  def self.prompt_to_add
+    puts "Type 'ADD' to add to your favorites."
+    input = gets.chomp
+
+    if input.eql? 'ADD'
+      # @user.add_favorite(station:, label:)
+    end
+  end
+
+  def self.favorites
+    puts "\n"
+    puts "Here are your favorites:"
   end
 end
