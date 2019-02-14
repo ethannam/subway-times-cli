@@ -10,12 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_13_152027) do
+ActiveRecord::Schema.define(version: 2019_02_14_192730) do
 
   create_table "arrivals", force: :cascade do |t|
     t.datetime "time"
     t.integer "train_id"
     t.integer "station_id"
+  end
+
+  create_table "favorites", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "station_id"
+    t.string "label"
   end
 
   create_table "line_stations", force: :cascade do |t|
@@ -38,6 +44,12 @@ ActiveRecord::Schema.define(version: 2019_02_13_152027) do
 
   create_table "trains", force: :cascade do |t|
     t.boolean "express"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "username"
+    t.string "first_name"
+    t.string "last_name"
   end
 
 end
