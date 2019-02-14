@@ -1,5 +1,4 @@
 class TransitApp
-  # binding.pry
   @user = nil
 
   def self.start
@@ -99,8 +98,11 @@ class TransitApp
 
       case command
       when "SEARCH"
-        search
-        prompt_to_add
+        result = search
+        if confirm_add.eql? true
+          label = get_label
+          @user.add_favorite(station: result, label: label)
+        end
       when "FAVORITES"
         favorites
       when "HELP"
@@ -126,6 +128,7 @@ class TransitApp
 
   def self.search
     station_result = []
+    station = nil
 
     loop do
       puts "What station are you looking for?"
@@ -164,20 +167,26 @@ class TransitApp
         break if (result != nil)
       end
     end
-    # TO-DO: Give user option to add the result to their favorites list
+    station
   end
 
-  def self.prompt_to_add
+  def self.confirm_add
     puts "Type 'ADD' to add to your favorites."
     input = gets.chomp
+    input == "ADD" ? true : false
+  end
 
-    if input.eql? 'ADD'
-      # @user.add_favorite(station:, label:)
-    end
+  def self.get_label
+    puts "Enter a label for this station? (Home, Work, etc.):"
+    input = gets.chomp
   end
 
   def self.favorites
     puts "\n"
     puts "Here are your favorites:"
+    Favorite.where(user_id: @user.id).each do |favorite|
+      station = Station.find(favorite.station_id)
+      puts "#{favorite.label}: #{station.name}"
+    end
   end
 end
