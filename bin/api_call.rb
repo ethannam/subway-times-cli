@@ -74,9 +74,9 @@ def api_call(train, station, feed)
   north[0..2].each { |hash| puts "#{((Time.at(hash[:time]).getlocal - Time.now.utc)/60).round} minute(s)" }
 
   # Output the estimate time for South
-  bg_south = my_array.select { |hash| hash[:stop_id] == find_station + "S" }
-  puts "The next 3 #{train} southbound trains at #{station} arrive in..."
-  bg_south.select! { |hash| ((Time.at(hash[:time]).getlocal - Time.now.utc)/60).round > 0 }
-  bg_south[0..2].each { |hash| puts "#{((Time.at(hash[:time]).getlocal - Time.now.utc)/60).round} minutes(s)" }
-  "Enjoy your ride!"
+  south = my_array.select { |hash| hash[:stop_id] == find_station + "S" }
+  puts "The next 3 southbound #{train} trains at #{station} arrive in..."
+  south.select! { |hash| ((Time.at(hash[:time]).getlocal - Time.now.utc)/60).round > 0 }
+  south[0..2].each { |hash| puts "#{((Time.at(hash[:time]).getlocal - Time.now.utc)/60).round} minutes(s)" }
+  puts "Enjoy your ride!"
 end
