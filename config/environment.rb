@@ -22,6 +22,8 @@ require_relative '../app/models/line_route.rb'
 # LIB
 require_relative '../lib/transit_app.rb'
 require_relative '../lib/data_handler.rb'
+require_relative '../lib/feed_mapper.rb'
+require_relative '../lib/query_handler.rb'
 
 # BIN
 require_relative '../bin/api_call.rb'

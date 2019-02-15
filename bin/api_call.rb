@@ -4,28 +4,6 @@ require 'google/transit/gtfs-realtime.pb'
 require 'net/http'
 require 'uri'
 
-def search_feed(train)
-  if train == "1" || train == "2" || train == "3" || train == "4" || train == "5" || train == "6"
-    feed_id = 1
-  elsif train == "A" || train == "C" || train == "E" || train == "H" || train == "S"
-    feed_id = 26
-  elsif train == "N" || train == "Q" || train == "R" || train == "W"
-    feed_id = 16
-  elsif train == "B" || train == "D" || train == "F" || train == "M"
-    feed_id = 21
-  elsif train == "L"
-    feed_id = 2
-  elsif train == "SIR"
-    feed_id = 11
-  elsif train == "G"
-    feed_id == 31
-  elsif train == "J" || train == "Z"
-    feed_id = 36
-  elsif train == "7"
-    feed_id = 51
-  end
-end
-
 def url(feed_id)
   # query = {key: ENV.fetch("MTA_KEY"), feed_id: mta_id}.to_query
   # "http://datamine.mta.info/mta_esi.php?#{query}"
@@ -41,7 +19,7 @@ end
 
 def api_call(station)
   line = Line.find(LineStation.find_by(station_id: station.id).line_id)
-  feed_id = search_feed(line.name)
+  feed_id = FeedMapper.new.map(line.name)
 
   data = Net::HTTP.get(URI.parse(url(feed_id)))
   feed = Transit_realtime::FeedMessage.decode(data)
