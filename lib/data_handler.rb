@@ -151,7 +151,6 @@ class DataHandler
         puts "#{((Time.at(detail[:time]).getlocal - Time.now.utc)/60).round} minute(s)"
       end
     end
-
   end
 
   private
