@@ -130,44 +130,19 @@ class TransitApp
     station_result = []
     station = nil
 
+    result = nil
     loop do
       puts "What station are you looking for?"
       station_query = gets.chomp
-      station_result = Station.where(name: station_query, parent_station: nil)
-      if station_result.length.eql? 0
+      result = QueryHandler.new.find_station(station_query)
+      if !result
         puts "\n"
         puts "That station doesn't exist. Try again."
       end
-      break if station_result.length > 0
+      break if result
     end
 
-    if station_result.length.eql? 1
-      station = station_result.first
-      api_call(station)
-    else
-      lines = station_result.map do |station|
-        Line.find(LineStation.find_by(station_id: station.id).line_id)
-      end
-
-      loop do
-        puts "Choose a line for this station:"
-        lines.each { |line| puts line.name }
-        input = gets.chomp
-        result = Line.find_by(name: input)
-
-        if result == nil
-          puts "\n"
-          puts "Choose a valid line please."
-        else
-          station = station_result.select do |station|
-            LineStation.find_by(line_id: result.id, station_id: station.id)
-          end.first
-          api_call(station)
-        end
-        break if (result != nil)
-      end
-    end
-    station
+    station = DataHandler.new.fetch_arrivals(result)
   end
 
   def self.confirm_add
