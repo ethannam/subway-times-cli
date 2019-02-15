@@ -102,8 +102,6 @@ class DataHandler
     data = Net::HTTP.get(URI.parse(url))
     feed = Transit_realtime::FeedMessage.decode(data)
 
-    binding.pry
-
     # Only get the trip updates for the station's daytime routes and convert it to a hash
     trip_updates = feed.entity.select do |entity|
       entity.field?(:trip_update) && (routes.include? entity.trip_update.trip.route_id)
@@ -132,7 +130,7 @@ class DataHandler
       end
     end
 
-    view_arrivals(trip_updates, station.name, group_routes: false)
+    view_arrivals(trip_updates, station.name, group_routes: true)
   end
 
   private
@@ -143,23 +141,59 @@ class DataHandler
   end
 
   def view_arrivals(data, station_name, limit: 5, group_routes: true)
-    if group_routes
+    north = data.map do |key, value|
+      { key => value.select { |hash| hash[:stop_id].include? "N" } }
+    end
 
+    north.map! do |hash|
+      { 
+        hash.keys.first => hash.values.flatten.map do |hash| 
+          ((Time.at(hash[:time]).getlocal - Time.now.utc)/60).round
+        end.select { |number| number >= 0 }.sort
+      }
+    end
+
+    south = data.map do |key, value|
+      { key => value.select { |hash| hash[:stop_id].include? "S" } }
+    end
+
+    south.map! do |hash|
+      { 
+        hash.keys.first => hash.values.flatten.map do |hash| 
+          ((Time.at(hash[:time]).getlocal - Time.now.utc)/60).round
+        end.select { |number| number >= 0 }.sort
+      }
+    end
+
+    if group_routes
+      north = north.map! do |hash|
+        hash.values.flatten.map do |time|
+          { hash.keys.first => time }
+        end
+      end.flatten.sort_by { |hash| hash.values.flatten }[0..limit - 1]
+
+      south = south.map! do |hash|
+        hash.values.flatten.map do |time|
+          { hash.keys.first => time }
+        end
+      end.flatten.sort_by { |hash| hash.values.flatten }[0..limit - 1]
+
+      puts "**************** NORTHBOUND TRAINS ****************"
+      puts "(LINE)\tWAIT TIME"
+      north.each do |hash|
+        puts "(#{hash.keys.first})\t#{hash.values.flatten.first} minutes(s)"
+      end
+      puts "\n"
+
+      puts "**************** SOUTHBOUND TRAINS ****************"
+      puts "(LINE)\tWAIT TIME"
+      south.each do |hash|
+        puts "(#{hash.keys.first})\t#{hash.values.flatten.first} minutes(s)"
+      end
+      puts "\n"
     else
       # Northbound
       puts "**************** NORTHBOUND TRAINS ****************"
-      north = data.map do |key, value|
-        { key => value.select { |hash| hash[:stop_id].include? "N" } }
-      end
-
-      north.map! do |hash|
-        { 
-          hash.keys.first => hash.values.flatten.map do |hash| 
-            ((Time.at(hash[:time]).getlocal - Time.now.utc)/60).round
-          end.select { |number| number >= 0 }.sort
-        }
-      end
-
       north.each do |hash|
         times = hash.values.flatten[0..(limit - 1)]
 
@@ -176,18 +210,6 @@ class DataHandler
 
       # Southbound
       puts "**************** SOUTHBOUND TRAINS ****************"
-      south = data.map do |key, value|
-        { key => value.select { |hash| hash[:stop_id].include? "S" } }
-      end
-
-      south.map! do |hash|
-        { 
-          hash.keys.first => hash.values.flatten.map do |hash| 
-            ((Time.at(hash[:time]).getlocal - Time.now.utc)/60).round
-          end.select { |number| number >= 0 }.sort
-        }
-      end
-
       south.each do |hash|
         times = hash.values.flatten[0..(limit - 1)]
 

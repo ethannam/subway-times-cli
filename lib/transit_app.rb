@@ -99,6 +99,7 @@ class TransitApp
       case command
       when "SEARCH"
         result = search
+        binding.pry
         if confirm_add.eql? true
           label = get_label
           @user.add_favorite(station: result, label: label)
@@ -142,7 +143,8 @@ class TransitApp
       break if result
     end
 
-    station = DataHandler.new.fetch_arrivals(result)
+    DataHandler.new.fetch_arrivals(result)
+    result
   end
 
   def self.confirm_add
