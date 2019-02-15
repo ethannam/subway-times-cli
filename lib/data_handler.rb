@@ -102,6 +102,8 @@ class DataHandler
     data = Net::HTTP.get(URI.parse(url))
     feed = Transit_realtime::FeedMessage.decode(data)
 
+    binding.pry
+
     # Only get the trip updates for the station's daytime routes and convert it to a hash
     trip_updates = feed.entity.select do |entity|
       entity.field?(:trip_update) && (routes.include? entity.trip_update.trip.route_id)
