@@ -10,13 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_14_192730) do
-
-  create_table "arrivals", force: :cascade do |t|
-    t.datetime "time"
-    t.integer "train_id"
-    t.integer "station_id"
-  end
+ActiveRecord::Schema.define(version: 2019_02_15_061049) do
 
   create_table "favorites", force: :cascade do |t|
     t.integer "user_id"
@@ -24,26 +18,48 @@ ActiveRecord::Schema.define(version: 2019_02_14_192730) do
     t.string "label"
   end
 
-  create_table "line_stations", force: :cascade do |t|
+  create_table "hubs", force: :cascade do |t|
+    t.integer "hub_id"
+    t.string "name"
+  end
+
+  create_table "line_routes", force: :cascade do |t|
     t.integer "line_id"
-    t.integer "station_id"
+    t.integer "route_id"
   end
 
   create_table "lines", force: :cascade do |t|
     t.string "name"
   end
 
-  create_table "stations", force: :cascade do |t|
-    t.string "name"
-    t.float "latitude"
-    t.float "longitude"
-    t.string "stop_id"
-    t.boolean "location_type"
-    t.string "parent_station"
+  create_table "route_stations", force: :cascade do |t|
+    t.integer "route_id"
+    t.integer "station_id"
   end
 
-  create_table "trains", force: :cascade do |t|
-    t.boolean "express"
+  create_table "routes", force: :cascade do |t|
+    t.string "mta_id"
+    t.string "agency_id"
+    t.string "short_name"
+    t.string "long_name"
+    t.string "description"
+    t.string "route_type"
+    t.string "url"
+    t.string "color"
+    t.string "text_color"
+  end
+
+  create_table "stations", force: :cascade do |t|
+    t.integer "hub_id"
+    t.string "stop_id"
+    t.string "division"
+    t.string "line"
+    t.string "name"
+    t.string "borough"
+    t.string "daytime_routes"
+    t.string "structure"
+    t.float "latitude"
+    t.float "longitude"
   end
 
   create_table "users", force: :cascade do |t|
