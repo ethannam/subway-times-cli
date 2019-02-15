@@ -30,7 +30,7 @@ def url(feed_id)
   # query = {key: ENV.fetch("MTA_KEY"), feed_id: mta_id}.to_query
   # "http://datamine.mta.info/mta_esi.php?#{query}"
 
-  query = {key: 'dd542468b31829a77225d110c37bbdcf', feed_id: feed_id}.to_query
+  query = {key: ENV["API_KEY"], feed_id: feed_id}.to_query
   "http://datamine.mta.info/mta_esi.php?#{query}"
 end
 
