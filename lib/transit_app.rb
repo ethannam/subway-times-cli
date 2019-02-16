@@ -99,7 +99,6 @@ class TransitApp
       case command
       when "SEARCH"
         result = search
-        binding.pry
         if confirm_add.eql? true
           label = get_label
           @user.add_favorite(station: result, label: label)
