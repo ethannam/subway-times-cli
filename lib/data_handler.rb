@@ -181,14 +181,14 @@ class DataHandler
       puts "**************** NORTHBOUND TRAINS ****************"
       puts "(LINE)\tWAIT TIME"
       north.each do |hash|
-        puts "(#{hash.keys.first})\t#{hash.values.flatten.first} minutes(s)"
+        puts "(#{hash.keys.first})\t#{hash.values.flatten.first} minute(s)"
       end
       puts "\n"
 
       puts "**************** SOUTHBOUND TRAINS ****************"
       puts "(LINE)\tWAIT TIME"
       south.each do |hash|
-        puts "(#{hash.keys.first})\t#{hash.values.flatten.first} minutes(s)"
+        puts "(#{hash.keys.first})\t#{hash.values.flatten.first} minute(s)"
       end
       puts "\n"
     else
@@ -202,7 +202,7 @@ class DataHandler
         else
           puts "The next #{times.length} northbound (#{hash.keys.first}) trains at #{station_name} will arrive in..."
           times.each do |time|
-            puts "#{time} minutes(s)"
+            puts "#{time} minute(s)"
           end
         end
         puts "\n"
@@ -218,7 +218,7 @@ class DataHandler
         else
           puts "The next #{times.length} southbound (#{hash.keys.first}) trains at #{station_name} will arrive in..."
           times.each do |time|
-            puts "#{time} minutes(s)"
+            puts "#{time} minute(s)"
           end
         end
         puts "\n"
